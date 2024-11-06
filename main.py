@@ -37,7 +37,7 @@ def main():
                     key = st.session_state.input_key['key']
         else:
             key = st.session_state.input_key['key']
-        # 키 검증 필요?
+        # 키 검증 필요? 
     except:
         error_message = traceback.format_exc()
         print(error_message)
@@ -49,7 +49,7 @@ def main():
     # 시간 표시
     try:
         last_updated = korean_now('%Y-%m-%d %H:%M:%S')
-        st.caption(f"**lastly updated:** {last_updated}")
+        st.caption(f"**last updated:** {last_updated}")
     except:
         error_message = traceback.format_exc()
         print(error_message)
