@@ -1,5 +1,6 @@
 import json
 import traceback
+import subprocess
 
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
@@ -121,8 +122,20 @@ def main():
     return
 
 
+def install_system_packages():
+    try:
+        # 업데이트 및 패키지 설치 명령 실행
+        subprocess.check_call(['sudo', 'apt', 'update'])
+        subprocess.check_call(['sudo', 'apt', 'install', '-y', 'google-chrome-stable'])
+        subprocess.check_call(['sudo', 'apt', 'install', '-y', 'chromium-driver'])
+        print("Packages installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print("An error occurred while installing packages:", e)
+
+
 
 if __name__ == "__main__":
+    install_system_packages()
     from dotenv import load_dotenv
     load_dotenv()
 
