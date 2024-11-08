@@ -124,8 +124,7 @@ def main():
 
 def install_system_packages():
     try:
-        # 업데이트 및 패키지 설치 명령 실행
-        subprocess.check_call(['apt', 'update'])
+        subprocess.check_call(['apt', 'update', '-o', 'Acquire::ForceIPv4=true'])
         subprocess.check_call(['apt', 'install', '-y', 'google-chrome-stable'])
         subprocess.check_call(['apt', 'install', '-y', 'chromium-driver'])
         print("Packages installed successfully.")
