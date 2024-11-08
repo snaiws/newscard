@@ -1,17 +1,22 @@
+import openai
+# OpenAI 라이브러리 버전 0.28로 다운그레이드하여 이전 API 방식으로 코드를 실행
+# pip install openai==0.28
 
+# OpenAI API 키 일단 직접 입력
+openai.api_key = ""  # API 키 입력 필요
 
-
-def openai_api(key, string):
-    """
-    API 호출 함수
-    key는 streamlit에서 입력받도록(github에 안올라가게 하기 위함)
-    입력 : api key
-    출력 : GPT 응답
-    """
-    return string
-
-
-
-if __name__ == "__main__":
-    key = input("key:\n")
-    openai_api(key)
+def get_gpt_response(prompt):
+ 
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # 사용 모델
+            messages=[{"role": "system", "content": "You are a helpful assistant."},
+                      {"role": "user", "content": prompt}],
+            max_tokens=300
+            
+        )
+        
+        return response['choices'][0]['message']['content']
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
