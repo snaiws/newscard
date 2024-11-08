@@ -5,7 +5,7 @@ import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
 from utils.now import korean_now
-from new_scrapper.selenium import get_news
+from new_scraper.selenium_scraper import get_news
 from data_process.preprocess import process_newscontent
 from summarizer.LLM import openai_api
 from summarizer.prompt_engineering import pm_strategy
@@ -80,7 +80,7 @@ def main():
     for new in news_raw:
         with st.spinner("뉴스를 처리 중입니다..."):
             try:
-                news_contents = new['contents']
+                news_contents = new['content']
                 # 데이터 처리
                 news_processed = process_newscontent(news_contents)
             except:
@@ -122,5 +122,8 @@ def main():
 
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv
+    load_dotenv()
+
     st_autorefresh(interval=60*1000, key="dataframerefresh")
     main()
