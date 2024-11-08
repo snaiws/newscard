@@ -130,7 +130,9 @@ def install_system_packages():
         subprocess.check_call(['sudo', 'apt', 'install', '-y', 'chromium-driver'])
         print("Packages installed successfully.")
     except subprocess.CalledProcessError as e:
+        error_message = traceback.format_exc()
         print("An error occurred while installing packages:", e)
+        st.caption(error_message)
 
 
 
