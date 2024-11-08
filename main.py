@@ -1,6 +1,5 @@
 import json
 import traceback
-import subprocess
 
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
@@ -122,21 +121,8 @@ def main():
     return
 
 
-def install_system_packages():
-    try:
-        subprocess.check_call(['apt', 'update', '-o', 'Acquire::ForceIPv4=true'])
-        subprocess.check_call(['apt', 'install', '-y', 'google-chrome-stable'])
-        subprocess.check_call(['apt', 'install', '-y', 'chromium-driver'])
-        print("Packages installed successfully.")
-    except subprocess.CalledProcessError as e:
-        error_message = traceback.format_exc()
-        print("An error occurred while installing packages:", e)
-        st.caption(error_message)
-
-
 
 if __name__ == "__main__":
-    install_system_packages()
     from dotenv import load_dotenv
     load_dotenv()
 
