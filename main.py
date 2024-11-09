@@ -7,7 +7,7 @@ from streamlit_autorefresh import st_autorefresh
 from utils.now import korean_now
 from new_scraper.selenium_scraper import get_news
 from data_process.preprocess import process_newscontent
-from summarizer.LLM import openai_api
+from summarizer.LLM import get_gpt_response
 from summarizer.prompt_engineering import pm_strategy
 
 
@@ -101,7 +101,7 @@ def main():
         # 문서 요약
         with st.spinner("뉴스를 요약 중입니다..."):
             try:
-                new_summary = openai_api(key, prompt)
+                new_summary = get_gpt_response(key,prompt)
             except:
                 error_message = traceback.format_exc()
                 print(error_message)
