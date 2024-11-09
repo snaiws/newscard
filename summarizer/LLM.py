@@ -4,14 +4,14 @@ import openai
 
 def get_gpt_response(key,prompt):
     openai.api_key = key
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-4",  # 사용 모델
         messages=[{"role": "system", "content": "You are a helpful assistant."},
                       {"role": "user", "content": prompt}],
         max_tokens=300
             
     )        
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message['content']
 
 
 if __name__ == "__main__":
