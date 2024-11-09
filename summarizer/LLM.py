@@ -17,10 +17,9 @@ def check_openai_api_key(api_key):
     client = openai.OpenAI(api_key=api_key)
     try:
         client.models.list()
-    except openai.AuthenticationError:
-        return False
-    else:
         return True
+    except:
+        return False
 
 if __name__ == "__main__":
     get_gpt_response() 

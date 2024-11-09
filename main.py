@@ -18,16 +18,13 @@ def input_key():
     key = st.text_input("KEY : ")
     if st.button("Submit"):
         # 키 검증
-        try:
-            if check_openai_api_key(key):
-                st.session_state.input_key = {"key": key}
-                st.session_state.invalid=False
-            else:
-                st.session_state.invalid=True
-        except:
+        if check_openai_api_key(key):
+            st.session_state.input_key = {"key": key}
+            st.session_state.invalid=False
+        else:
             st.session_state.invalid=True
-
         st.rerun()
+
 
 def main():
     # 타이틀
@@ -53,6 +50,12 @@ def main():
     except:
         error_message = traceback.format_exc()
         print(error_message)
+    
+    # 키 입력 대기
+    if not key:
+        st.caption(f"키 입력 필요")
+        return
+
 
     # 데이터 불러오기
     data = {
