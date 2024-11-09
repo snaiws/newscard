@@ -90,7 +90,6 @@ def main():
         error_message = traceback.format_exc()
         print(error_message)
         st.caption(f"데이터 수집 오류")
-        st.caption(error_message)
 
     # 시간 표시
     try:
