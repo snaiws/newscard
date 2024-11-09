@@ -8,7 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 from utils.now import korean_now
 from new_scraper.selenium_scraper import get_news
 from data_process.preprocess import process_newscontent
-from summarizer.LLM import get_gpt_response
+from summarizer.LLM import check_openai_api_key, get_gpt_response
 from summarizer.prompt_engineering import pm_strategy
 
 
@@ -17,7 +17,16 @@ from summarizer.prompt_engineering import pm_strategy
 def input_key():
     key = st.text_input("KEY : ")
     if st.button("Submit"):
-        st.session_state.input_key = {"key": key}
+        # 키 검증
+        try:
+            if check_openai_api_key(key):
+                st.session_state.input_key = {"key": key}
+                st.session_state.invalid=False
+            else:
+                st.session_state.invalid=True
+        except:
+            st.session_state.invalid=True
+
         st.rerun()
 
 def main():
@@ -31,6 +40,9 @@ def main():
     # 키
     key = ""
     try:
+        if "invalid" in st.session_state:
+            if st.session_state.invalid:
+                st.warning("유효한 키를 입력해주세요")
         if "input_key" not in st.session_state:
             if st.button("key 입력"):
                 input_key()
@@ -38,15 +50,9 @@ def main():
                     key = st.session_state.input_key['key']
         else:
             key = st.session_state.input_key['key']
-        # 키 검증 필요? 
     except:
         error_message = traceback.format_exc()
         print(error_message)
-    
-    if not key:
-        st.caption(f"키 입력 필요")
-        return
-
 
     # 데이터 불러오기
     data = {
