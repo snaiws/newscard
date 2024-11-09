@@ -1,5 +1,6 @@
 import json
 import traceback
+import datetime
 
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
@@ -46,38 +47,51 @@ def main():
         st.caption(f"키 입력 필요")
         return
 
-    # 시간 표시
-    try:
-        last_updated = korean_now('%Y-%m-%d %H:%M:%S')
-        st.caption(f"**last updated:** {last_updated}")
-    except:
-        error_message = traceback.format_exc()
-        print(error_message)
-        st.caption(f"시간 불러오기 오류")
-
-    # 데이터 수집
-    try:
-        # refresh시 json 저장이 유지되는지 확인 필요
-        with st.spinner("뉴스를 수집 중입니다..."):
-            get_news()
-    except:
-        error_message = traceback.format_exc()
-        print(error_message)
-        st.caption(f"데이터 수집 오류")
-        st.caption(error_message)
 
     # 데이터 불러오기
-    news_raw = []
+    data = {
+        "contents":[],
+        "updated_at":""
+    }
     try:
         with st.spinner("뉴스를 불러오는 중입니다..."):
             with open('data.json', 'r', encoding="utf-8") as f:
-                news_raw = json.load(f)
+                data = json.load(f)
 
     except:
         error_message = traceback.format_exc()
         print(error_message)
         st.caption(f"데이터 불러오기 오류")
 
+
+    # 데이터 수집
+    try:
+        last_updated = data['updated_at']
+        now = korean_now('%Y-%m-%d %H:%M:%S')
+        datetime_prior = datetime.datetime.strptime(data['updated_at'], "%Y-%m-%d %H:%M:%S")
+        datetime_now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S")
+        if datetime_now - datetime_prior > datetime.timedelta(minutes=10):
+        # refresh시 json 저장이 유지되는지 확인 필요
+            with st.spinner("뉴스를 수집 중입니다..."):
+                data = get_news(last_updated)
+            last_updated = now
+        else:
+            last_updated = data['updated_at']
+    except:
+        error_message = traceback.format_exc()
+        print(error_message)
+        st.caption(f"데이터 수집 오류")
+        st.caption(error_message)
+
+    # 시간 표시
+    try:
+        st.caption(f"**last updated:** {last_updated}")
+    except:
+        error_message = traceback.format_exc()
+        print(error_message)
+        st.caption(f"시간 표시 오류")
+
+    news_raw = data['contents']
     for new in news_raw:
         with st.spinner("뉴스를 처리 중입니다..."):
             try:
@@ -126,5 +140,5 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
 
-    st_autorefresh(interval=60*1000, key="dataframerefresh")
+    st_autorefresh(interval=60*1000*11, key="dataframerefresh")
     main()
